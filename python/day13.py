@@ -45,7 +45,7 @@ def play(program):
     return score
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     with open("../inputs/day13.input") as f:
         program = parse(f.readline())

@@ -1,5 +1,3 @@
-import unittest
-
 from collections import defaultdict, Counter
 
 
@@ -72,26 +70,7 @@ def part2():
     )
 
 
-class TestDay6(unittest.TestCase):
-    def test_example(self):
-        test_data = """
-        COM)B
-        B)C
-        C)D
-        D)E
-        E)F
-        B)G
-        G)H
-        D)I
-        E)J
-        J)K
-        K)L
-        """.split()
-        self.assertEqual(checksum(list(map(parse, test_data))), 42)
-
-
 if __name__ == "__main__":
-    unittest.main(exit=False)
 
     with open("../inputs/day6.input") as f:
         lines = list(map(parse, f.readlines()))

@@ -27,10 +27,6 @@
       the collected keys must be sorted so that we can benefit from the
       cache regardless of the order in which we collect them)
 """
-import unittest
-
-from textwrap import dedent
-
 from collections import deque
 from functools import lru_cache
 from string import ascii_lowercase, ascii_uppercase
@@ -94,7 +90,7 @@ def parse(content):
     maze = {}
     starting_point = None
 
-    for y, row in enumerate(content.split('\n')):
+    for y, row in enumerate(content.split("\n")):
         for x, cell in enumerate(row):
             point = complex(x, y)
             if cell == START:
@@ -127,7 +123,7 @@ def parse2(content):
     maze = {}
     starting_points = []
 
-    for y, row in enumerate(content.split('\n')):
+    for y, row in enumerate(content.split("\n")):
         for x, cell in enumerate(row):
             point = complex(x, y)
             if cell == START:
@@ -138,7 +134,6 @@ def parse2(content):
 
 
 def part1(grid, starting_point):
-
     @lru_cache(maxsize=None)
     def min_steps(starting_point, collected_keys):
         keys = reachable_keys(grid, starting_point, collected_keys)
@@ -147,11 +142,13 @@ def part1(grid, starting_point):
 
         distances = []
         for point, dist in keys.items():
-            sortedkeys = ''.join(sorted(collected_keys + grid[point]))  # Predictable order for caching param
+            sortedkeys = "".join(
+                sorted(collected_keys + grid[point])
+            )  # Predictable order for caching param
             distances.append(dist + min_steps(point, sortedkeys))
         return min(distances)
 
-    return min_steps(starting_point, '')
+    return min_steps(starting_point, "")
 
 
 def all_reachable_keys(grid, starting_points, collected_keys):
@@ -165,7 +162,6 @@ def all_reachable_keys(grid, starting_points, collected_keys):
 
 
 def part2(grid, starting_points):
-
     @lru_cache(maxsize=None)
     def min_steps(starting_points, collected_keys):
         keys = all_reachable_keys(grid, starting_points, collected_keys)
@@ -178,124 +174,17 @@ def part2(grid, starting_points):
                 # Explore branches one at a time:
                 # For each robot, try each of its reachable keys path
                 # while freezing the other robots position
-                positions = tuple(point if i == j else p for j, p in enumerate(starting_points))
-                sortedkeys = ''.join(sorted(collected_keys + grid[point]))
+                positions = tuple(
+                    point if i == j else p for j, p in enumerate(starting_points)
+                )
+                sortedkeys = "".join(sorted(collected_keys + grid[point]))
                 distances.append(dist + min_steps(positions, sortedkeys))
         return min(distances)
 
-    return min_steps(starting_points, '')
+    return min_steps(starting_points, "")
 
 
-class TestDay18(unittest.TestCase):
-
-    def test_part1_example1(self):
-        content = dedent(
-            """
-            #########
-            #b.A.@.a#
-            #########
-            """)
-        grid, starting_point = parse(content)
-        self.assertEqual(part1(grid, starting_point), 8)
-
-    def test_part1_example2(self):
-        content = dedent(
-            """
-            ########################
-            #f.D.E.e.C.b.A.@.a.B.c.#
-            ######################.#
-            #d.....................#
-            ########################
-            """)
-        grid, starting_point = parse(content)
-        self.assertEqual(part1(grid, starting_point), 86)
-
-    def test_part1_example3(self):
-        content = dedent(
-            """
-            ########################
-            #...............b.C.D.f#
-            #.######################
-            #.....@.a.B.c.d.A.e.F.g#
-            ########################
-            """)
-        grid, starting_point = parse(content)
-        self.assertEqual(part1(grid, starting_point), 132)
-
-    def test_part1_example4(self):
-        content = dedent(
-            """
-            #################
-            #i.G..c...e..H.p#
-            ########.########
-            #j.A..b...f..D.o#
-            ########@########
-            #k.E..a...g..B.n#
-            ########.########
-            #l.F..d...h..C.m#
-            #################
-            """)
-        grid, starting_point = parse(content)
-        self.assertEqual(part1(grid, starting_point), 136)
-
-    def test_part1_example5(self):
-        content = dedent(
-            """
-            ########################
-            #@..............ac.GI.b#
-            ###d#e#f################
-            ###A#B#C################
-            ###g#h#i################
-            ########################
-            """)
-        grid, starting_point = parse(content)
-        self.assertEqual(part1(grid, starting_point), 81)
-
-    def test_part2_example1(self):
-        content = dedent(
-            """
-            #######
-            #a.#Cd#
-            ##@#@##
-            #######
-            ##@#@##
-            #cB#Ab#
-            #######
-            """)
-        grid, starting_points = parse2(content)
-        self.assertEqual(part2(grid, starting_points), 8)
-
-    def test_part2_example2(self):
-        content = dedent(
-            """
-            ###############
-            #d.ABC.#.....a#
-            ######@#@######
-            ###############
-            ######@#@######
-            #b.....#.....c#
-            ###############
-            """)
-        grid, starting_points = parse2(content)
-        self.assertEqual(part2(grid, starting_points), 24)
-
-    def test_part2_example3(self):
-        content = dedent(
-            """
-            #############
-            #DcBa.#.GhKl#
-            #.###@#@#I###
-            #e#d#####j#k#
-            ###C#@#@###J#
-            #fEbA.#.FgHi#
-            #############
-            """)
-        grid, starting_points = parse2(content)
-        self.assertEqual(part2(grid, starting_points), 32)
-
-
-if __name__ == '__main__':
-    unittest.main(exit=False)
+if __name__ == "__main__":
 
     with open("../inputs/day18.input") as f:
         grid, start = parse(f.read())
